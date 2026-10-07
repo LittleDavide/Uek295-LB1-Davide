@@ -1,19 +1,27 @@
 <?php
-    use Slim\Factory\AppFactory;
-    
-    $config = json_decode(file_get_contents(__DIR__ . "/../config.json"), true);
-    require __DIR__ . "/../vendor/autoload.php";
-    $app = AppFactory::create();
-    $app->addBodyParsingMiddleware();
+use Slim\Factory\AppFactory;
 
-    $app->setBasePath("/api/v1");
-    require_once __DIR__ . "/api/api-main.php";
+$config = json_decode(file_get_contents(__DIR__ . "/../config.json"), true);
+require __DIR__ . "/../vendor/autoload.php";
+$app = AppFactory::create();
+$app->addBodyParsingMiddleware();
 
-    require_once __DIR__ . "/api/AuthController.php";
+$app->setBasePath("/api/v1");
+require_once __DIR__ . "/api/api-main.php";
 
-    $app->post("/authenticate", [
-        AuthController::class,
-        "authenticate"
-    ]);
+require_once __DIR__ . "/api/AuthController.php";
+require_once __DIR__ . "/api/CreateCategoryController.php";
 
-    $app->run();
+$database = new mysqli("localhost", "root", "", "uek295_lb01");
+
+$app->post("/authenticate", [
+    AuthController::class,
+    "authenticate"
+]);
+
+$app->post("/category", [
+    CreateCategoryController::class,
+    "createCategory"
+]);
+
+$app->run();
