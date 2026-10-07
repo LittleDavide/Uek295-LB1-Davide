@@ -1,10 +1,47 @@
 <?php
-
+use OpenApi\Attributes as OAT;
 use ReallySimpleJWT\Token;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 class CreateCategoryController
 {
+    #[OAT\Post(
+        path: '/api/v1/category',
+        summary: 'Erstellt eine neue Produkt Kategorie',
+        tags: ['category'],
+        requestBody: new OAT\RequestBody(
+            required: true,
+            description: 'Der JSON-Body muss active (tinyInt)und name als Strings enthalten.',
+            content: new OAT\JsonContent(
+                properties: [
+                    new OAT\Property(
+                        property: 'active',
+                        type: 'int',
+                        example: '1'
+                    ),
+                    new OAT\Property(
+                        property: 'name',
+                        type: 'string',
+                        example: 'GmbH'
+                    )
+                ]
+            )
+        ),
+        responses: [
+            new OAT\Response(
+                response: 201,
+                description: 'Eintrag erfolgreich erstellt'
+            ),
+            new OAT\Response(
+                response: 400,
+                description: 'Validation Fehler beim Request Body'
+            ),
+            new OAT\Response(
+                response: 401,
+                description: 'Benutzername oder Passwort ist falsch. Die Antwort hat keinen Body.'
+            )
+        ]
+    )]
     public static function createCategory(Request $request, Response $response)
     {
         global $config;
