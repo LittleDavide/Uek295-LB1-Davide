@@ -10,7 +10,7 @@ foreach ($scripts as $script) {
 
 // Build and return the OpenAPI documentation as YAML.
 $result = (new \OpenApi\Builder())
-    ->addSource(__DIR__ . "/api")
+    ->addSource(__DIR__)
     ->build();
 
 header('Content-Type: application/x-yaml');

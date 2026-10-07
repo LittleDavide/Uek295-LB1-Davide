@@ -4,7 +4,7 @@ use ReallySimpleJWT\Token;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 class AuthController {
-    #[OAT\Post(
+        #[OAT\Post(
         path: '/api/v1/authenticate',
         summary: 'Authentifiziert einen Benutzer anhand von Benutzername und Passwort.',
         tags: ['auth'],
