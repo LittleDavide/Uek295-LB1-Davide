@@ -51,6 +51,10 @@ class UpdateCategoryController
             new OAT\Response(
                 response: 401,
                 description: 'Benutzername oder Passwort ist falsch. Die Antwort hat keinen Body.'
+            ),
+            new OAT\Response(
+                response: 404,
+                description: 'Category not Found'
             )
         ]
     )]
@@ -64,14 +68,28 @@ class UpdateCategoryController
         if ($token == "" || !Token::validate($token, $config['password'])) {
             return $response->withStatus(401);
         }
-
-        $statement = $database->prepare("UPDATE category SET active = ?, name = ? WHERE category_id = ?");
-
         $request_data = json_decode((string) $request->getBody(), true);
 
         $name = trim($request_data['name']);
         $active = $request_data['active'];
         $id = $args['id'];
+
+        $statement = $database->prepare("SELECT * FROM category WHERE category_id = ?");
+
+        $statement->execute([$id]);
+
+        if (mysqli_num_rows($statement->get_result()) == 0) {
+            $response->getBody()->write(json_encode(
+                ["error" => "category do not exist :("]
+            ));
+            return $response
+                ->withStatus(404)
+                ->withHeader("Content-Type", "application/json");
+        }
+
+        $statement = $database->prepare("UPDATE category SET active = ?, name = ? WHERE category_id = ?");
+
+
 
         if ($active > 1 || $active < 0) {
             $response->getBody()->write(json_encode(
