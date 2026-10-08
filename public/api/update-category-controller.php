@@ -50,7 +50,7 @@ class UpdateCategoryController
             ),
             new OAT\Response(
                 response: 401,
-                description: 'Benutzername oder Passwort ist falsch. Die Antwort hat keinen Body.'
+                description: 'Kein aktives Token. Bitte anmelden.'
             ),
             new OAT\Response(
                 response: 404,

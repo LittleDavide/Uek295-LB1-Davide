@@ -14,6 +14,7 @@ require_once __DIR__ . "/api/CreateCategoryController.php";
 require_once __DIR__ . "/api/update-category-controller.php";
 require_once __DIR__ . "/api/delete-category-controller.php";
 require_once __DIR__ . "/api/get-single-category-controller.php";
+require_once __DIR__ . "/api/get-all-category-controller.php";
 
 $database = new mysqli("localhost", "root", "", "uek295_lb01");
 
@@ -41,5 +42,11 @@ $app->get("/category/{id}", [
     GetSingleCategoryController::class,
     "getSingleCategory"
 ]);
+
+$app->get("/categories", [
+    GetAllCategorysController::class,
+    "getAllCategories"
+]);
+
 
 $app->run();
