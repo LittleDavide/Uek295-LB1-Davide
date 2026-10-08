@@ -13,6 +13,7 @@ require_once __DIR__ . "/api/AuthController.php";
 require_once __DIR__ . "/api/CreateCategoryController.php";
 require_once __DIR__ . "/api/update-category-controller.php";
 require_once __DIR__ . "/api/delete-category-controller.php";
+require_once __DIR__ . "/api/get-single-category-controller.php";
 
 $database = new mysqli("localhost", "root", "", "uek295_lb01");
 
@@ -34,6 +35,11 @@ $app->post("/category", [
 $app->delete("/category/{id}", [
     DeleteCategoryController::class,
     "deleteCategory"
+]);
+
+$app->get("/category/{id}", [
+    GetSingleCategoryController::class,
+    "getSingleCategory"
 ]);
 
 $app->run();

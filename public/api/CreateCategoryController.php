@@ -57,6 +57,15 @@ class CreateCategoryController
 
         $request_data = json_decode((string) $request->getBody(), true);
 
+        if (!isset($request_data['name'], $request_data['active'])) {
+            $response->getBody()->write(json_encode(
+                ["error" => "JSON pflichtfelder fehlen"]
+            ));
+            return $response
+                ->withStatus(400)
+                ->withHeader("Content-Type", "application/json");
+        }
+
         $name = trim($request_data['name']);
         $active = $request_data['active'];
 
