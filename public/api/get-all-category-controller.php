@@ -1,11 +1,21 @@
 <?php
+
 use OpenApi\Attributes as OAT;
 use ReallySimpleJWT\Token;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 
-class GetAllCategorysController
-{
+/**
+ * Handles retrieval of all categories.
+ */
+class GetAllCategoriesController {
+    /**
+     * Returns all categories as a JSON array.
+     *
+     * @param Request $request The incoming HTTP request.
+     * @param Response $response The HTTP response to populate.
+     * @returns Response The HTTP response with its status and body.
+     */
     #[OAT\Get(
         path: '/api/v1/categories',
         summary: 'Gibt alle Kategorien zurück.',
@@ -21,8 +31,7 @@ class GetAllCategorysController
             )
         ]
     )]
-    public static function getAllCategories(Request $request, Response $response)
-    {
+    public static function getAllCategories(Request $request, Response $response) {
         global $config;
         global $database;
 
@@ -38,15 +47,13 @@ class GetAllCategorysController
 
         $result = $statement->get_result();
 
+        $categories = [ ];
 
-
-        $categories = [];
-
-        while ($result_data = $result->fetch_assoc()) {
+        while ($resultData = $result->fetch_assoc()) {
             $categories[] = [
-                "category_id" => $result_data['category_id'],
-                "active" => $result_data['active'],
-                "name" => $result_data['name']
+                "category_id" => $resultData['category_id'],
+                "active" => $resultData['active'],
+                "name" => $resultData['name']
             ];
         }
 

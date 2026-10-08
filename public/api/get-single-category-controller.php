@@ -1,10 +1,22 @@
 <?php
+
 use OpenApi\Attributes as OAT;
 use ReallySimpleJWT\Token;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
-class GetSingleCategoryController
-{
+
+/**
+ * Handles retrieval of individual categories.
+ */
+class GetSingleCategoryController {
+    /**
+     * Returns the category selected by its ID.
+     *
+     * @param Request $request The incoming HTTP request.
+     * @param Response $response The HTTP response to populate.
+     * @param array $args The parameters extracted from the route.
+     * @returns Response The HTTP response with its status and body.
+     */
     #[OAT\Get(
         path: '/api/v1/category/{id}',
         summary: 'Gibt den gesuchten Kategorie zurück',
@@ -36,8 +48,7 @@ class GetSingleCategoryController
             )
         ]
     )]
-    public static function getSingleCategory(Request $request, Response $response, $args)
-    {
+    public static function getSingleCategory(Request $request, Response $response, $args) {
         global $config;
         global $database;
 
@@ -47,11 +58,11 @@ class GetSingleCategoryController
             return $response->withStatus(401);
         }
 
-        $id = $args['id'];
+        $categoryId = $args['id'];
 
         $statement = $database->prepare("SELECT * FROM category WHERE category_id = ?");
 
-        $statement->execute([$id]);
+        $statement->execute([$categoryId]);
 
         $result = $statement->get_result();
 
@@ -64,12 +75,12 @@ class GetSingleCategoryController
                 ->withHeader("Content-Type", "application/json");
         }
 
-        $result_data = $result->fetch_assoc();
+        $resultData = $result->fetch_assoc();
 
         $response->getBody()->write(json_encode([
-            "category_id" => $result_data['category_id'],
-            "active" => $result_data['active'],
-            "name" => $result_data['name']
+                "category_id" => $resultData['category_id'],
+                "active" => $resultData['active'],
+                "name" => $resultData['name']
         ]));
 
         return $response

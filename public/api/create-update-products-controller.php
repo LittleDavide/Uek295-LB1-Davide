@@ -1,10 +1,22 @@
 <?php
+
 use OpenApi\Attributes as OAT;
 use ReallySimpleJWT\Token;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
-class CreateUpdateProductsController
-{
+
+/**
+ * Handles product creation and updates.
+ */
+class CreateUpdateProductsController {
+    /**
+     * Validates the request and creates or updates the selected product.
+     *
+     * @param Request $request The incoming HTTP request.
+     * @param Response $response The HTTP response to populate.
+     * @param array $args The parameters extracted from the route.
+     * @returns Response The HTTP response with its status and body.
+     */
     #[OAT\Put(
         path: '/api/v1/product/{sku}',
         summary: 'Erstellt ein neues Produkt oder aktualisiert ein bestehendes Produkt.',
@@ -54,7 +66,7 @@ class CreateUpdateProductsController
                     ),
                     new OAT\Property(
                         property: 'price',
-                        type: 'number',
+                        type: 'double',
                         example: 19.90
                     ),
                     new OAT\Property(
@@ -95,15 +107,15 @@ class CreateUpdateProductsController
             return $response->withStatus(401);
         }
 
-        $request_data = json_decode((string) $request->getBody(), true);
+        $requestData = json_decode((string) $request->getBody(), true);
 
         if (
             !isset(
-            $request_data['active'],
-            $request_data['name'],
-            $request_data['price'],
-            $request_data['stock']
-        )
+                $requestData['active'],
+                $requestData['name'],
+                $requestData['price'],
+                $requestData['stock']
+            )
         ) {
             $response->getBody()->write(json_encode(
                 ["error" => "JSON pflichtfelder fehlen"]
@@ -113,13 +125,13 @@ class CreateUpdateProductsController
                 ->withHeader("Content-Type", "application/json");
         }
 
-        $active = $request_data['active'];
-        $id_category = $request_data['id_category'] ?? null;
-        $name = trim($request_data['name']);
-        $image = trim($request_data['image'] ?? "");
-        $description = trim($request_data['description'] ?? "");
-        $price = $request_data['price'];
-        $stock = $request_data['stock'];
+        $active = $requestData['active'];
+        $categoryId = $requestData['id_category'] ?? null;
+        $name = trim($requestData['name']);
+        $image = trim($requestData['image'] ?? "");
+        $description = trim($requestData['description'] ?? "");
+        $price = $requestData['price'];
+        $stock = $requestData['stock'];
         $sku = trim($args['sku']);
 
         if (strlen($sku) > 100 || strlen($sku) < 1) {
@@ -140,9 +152,7 @@ class CreateUpdateProductsController
                 ->withHeader("Content-Type", "application/json");
         }
 
-
-
-        if (!is_int($id_category) && $id_category !== null) {
+        if (!is_int($categoryId) && $categoryId !== null) {
             $response->getBody()->write(json_encode(
                 ["error" => "Muss eine nummer sein"]
             ));
@@ -151,9 +161,9 @@ class CreateUpdateProductsController
                 ->withHeader("Content-Type", "application/json");
         }
 
-        if ($id_category !== null) {
+        if ($categoryId !== null) {
             $statement = $database->prepare("SELECT * FROM category WHERE category_id = ?");
-            $statement->execute([$id_category]);
+            $statement->execute([$categoryId]);
 
             if (mysqli_num_rows($statement->get_result()) == 0) {
                 $response->getBody()->write(json_encode(
@@ -205,12 +215,10 @@ class CreateUpdateProductsController
 
         $statement->execute([$sku]);
 
-
         if (mysqli_num_rows($statement->get_result()) == 0) {
-
             $statement = $database->prepare("INSERT INTO product (sku, active, id_category, name, image, description, price, stock) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 
-            $statement->execute([$sku, $active, $id_category, $name, $image, $description, $price, $stock]);
+            $statement->execute([$sku, $active, $categoryId, $name, $image, $description, $price, $stock]);
 
             $response->getBody()->write(json_encode(
                 ["success" => "Is created"]
@@ -222,7 +230,7 @@ class CreateUpdateProductsController
 
         $statement = $database->prepare("UPDATE product SET active = ?, id_category = ?, name = ?, image = ?, description = ?, price = ?, stock = ? WHERE sku = ?");
 
-        $statement->execute([$active, $id_category, $name, $image, $description, $price, $stock, $sku]);
+        $statement->execute([$active, $categoryId, $name, $image, $description, $price, $stock, $sku]);
 
         $response->getBody()->write(json_encode(
             ["success" => "Is updatet"]

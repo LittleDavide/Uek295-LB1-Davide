@@ -1,10 +1,22 @@
 <?php
+
 use OpenApi\Attributes as OAT;
 use ReallySimpleJWT\Token;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
-class DeleteProductsController
-{
+
+/**
+ * Handles product deletion.
+ */
+class DeleteProductsController {
+    /**
+     * Deletes the product selected by its SKU.
+     *
+     * @param Request $request The incoming HTTP request.
+     * @param Response $response The HTTP response to populate.
+     * @param array $args The parameters extracted from the route.
+     * @returns Response The HTTP response with its status and body.
+     */
     #[OAT\Delete(
         path: '/api/v1/product/{sku}',
         summary: 'Löscht ein Produkt anhand seiner SKU.',
@@ -36,8 +48,7 @@ class DeleteProductsController
             )
         ]
     )]
-    public static function deleteProducts(Request $request, Response $response, $args)
-    {
+    public static function deleteProducts(Request $request, Response $response, $args) {
         global $config;
         global $database;
 

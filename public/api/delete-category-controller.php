@@ -1,10 +1,22 @@
 <?php
+
 use OpenApi\Attributes as OAT;
 use ReallySimpleJWT\Token;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
-class DeleteCategoryController
-{
+
+/**
+ * Handles category deletion.
+ */
+class DeleteCategoryController {
+    /**
+     * Deletes the category selected by its ID.
+     *
+     * @param Request $request The incoming HTTP request.
+     * @param Response $response The HTTP response to populate.
+     * @param array $args The parameters extracted from the route.
+     * @returns Response The HTTP response with its status and body.
+     */
     #[OAT\Delete(
         path: '/api/v1/category/{id}',
         summary: 'Einen Eintrag löschen aus der Datenbank',
@@ -36,8 +48,7 @@ class DeleteCategoryController
             )
         ]
     )]
-    public static function deleteCategory(Request $request, Response $response, $args)
-    {
+    public static function deleteCategory(Request $request, Response $response, $args) {
         global $config;
         global $database;
 
@@ -47,11 +58,11 @@ class DeleteCategoryController
             return $response->withStatus(401);
         }
 
-        $id = $args['id'];
+        $categoryId = $args['id'];
 
         $statement = $database->prepare("SELECT * FROM category WHERE category_id = ?");
 
-        $statement->execute([$id]);
+        $statement->execute([$categoryId]);
 
         if (mysqli_num_rows($statement->get_result()) == 0) {
             $response->getBody()->write(json_encode(
@@ -64,7 +75,7 @@ class DeleteCategoryController
 
         $statement = $database->prepare("DELETE FROM category where category_id = ?");
 
-        $statement->execute([$id]);
+        $statement->execute([$categoryId]);
 
         return $response
             ->withStatus(204)

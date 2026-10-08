@@ -1,4 +1,5 @@
 <?php
+
 use Slim\Factory\AppFactory;
 
 $config = json_decode(file_get_contents(__DIR__ . "/../config.json"), true);
@@ -23,53 +24,53 @@ require_once __DIR__ . "/api/get-all-products-controller.php";
 $database = new mysqli("localhost", "root", "", "uek295_lb01");
 
 $app->post("/authenticate", [
-    AuthController::class,
-    "authenticate"
+        AuthController::class,
+        "authenticate"
 ]);
 
 $app->patch("/category/{id}", [
-    UpdateCategoryController::class,
-    "updateCategory"
+        UpdateCategoryController::class,
+        "updateCategory"
 ]);
 
 $app->post("/category", [
-    CreateCategoryController::class,
-    "createCategory"
+        CreateCategoryController::class,
+        "createCategory"
 ]);
 
 $app->delete("/category/{id}", [
-    DeleteCategoryController::class,
-    "deleteCategory"
+        DeleteCategoryController::class,
+        "deleteCategory"
 ]);
 
 $app->get("/category/{id}", [
-    GetSingleCategoryController::class,
-    "getSingleCategory"
+        GetSingleCategoryController::class,
+        "getSingleCategory"
 ]);
 
 $app->get("/categories", [
-    GetAllCategorysController::class,
-    "getAllCategories"
+        GetAllCategoriesController::class,
+        "getAllCategories"
 ]);
 
 $app->put("/product/{sku}", [
-    CreateUpdateProductsController::class,
-    "createAndUpdateProducts"
+        CreateUpdateProductsController::class,
+        "createAndUpdateProducts"
 ]);
 
 $app->delete("/product/{sku}", [
-    DeleteProductsController::class,
-    "deleteProducts"
+        DeleteProductsController::class,
+        "deleteProducts"
 ]);
 
 $app->get("/product/{sku}", [
-    GetSingleProductController::class,
-    "getSingleProduct"
+        GetSingleProductController::class,
+        "getSingleProduct"
 ]);
 
 $app->get("/products", [
-    GetAllProductsController::class,
-    "getAllProducts"
+        GetAllProductsController::class,
+        "getAllProducts"
 ]);
 
 $app->run();

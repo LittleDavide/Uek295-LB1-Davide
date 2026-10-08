@@ -1,10 +1,22 @@
 <?php
+
 use OpenApi\Attributes as OAT;
 use ReallySimpleJWT\Token;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
-class UpdateCategoryController
-{
+
+/**
+ * Handles category updates.
+ */
+class UpdateCategoryController {
+    /**
+     * Validates the request and updates the selected category.
+     *
+     * @param Request $request The incoming HTTP request.
+     * @param Response $response The HTTP response to populate.
+     * @param array $args The parameters extracted from the route.
+     * @returns Response The HTTP response with its status and body.
+     */
     #[OAT\PATCH(
         path: '/api/v1/category/{id}',
         summary: 'Einen Kategorie daten ändern ',
@@ -58,8 +70,7 @@ class UpdateCategoryController
             )
         ]
     )]
-    public static function updateCategory(Request $request, Response $response, $args)
-    {
+    public static function updateCategory(Request $request, Response $response, $args) {
         global $config;
         global $database;
 
@@ -68,9 +79,9 @@ class UpdateCategoryController
         if ($token == "" || !Token::validate($token, $config['password'])) {
             return $response->withStatus(401);
         }
-        $request_data = $request->getParsedBody();
+        $requestData = $request->getParsedBody();
 
-        if (!isset($request_data['name'], $request_data['active'])) {
+        if (!isset($requestData['name'], $requestData['active'])) {
             $response->getBody()->write(json_encode(
                 ["error" => "JSON pflichtfelder fehlen"]
             ));
@@ -79,13 +90,13 @@ class UpdateCategoryController
                 ->withHeader("Content-Type", "application/json");
         }
 
-        $name = trim($request_data['name']);
-        $active = $request_data['active'];
-        $id = $args['id'];
+        $name = trim($requestData['name']);
+        $active = $requestData['active'];
+        $categoryId = $args['id'];
 
         $statement = $database->prepare("SELECT * FROM category WHERE category_id = ?");
 
-        $statement->execute([$id]);
+        $statement->execute([$categoryId]);
 
         if (mysqli_num_rows($statement->get_result()) == 0) {
             $response->getBody()->write(json_encode(
@@ -97,8 +108,6 @@ class UpdateCategoryController
         }
 
         $statement = $database->prepare("UPDATE category SET active = ?, name = ? WHERE category_id = ?");
-
-
 
         if ($active > 1 || $active < 0) {
             $response->getBody()->write(json_encode(
@@ -118,7 +127,7 @@ class UpdateCategoryController
                 ->withHeader("Content-Type", "application/json");
         }
 
-        $statement->execute([$active, $name, $id]);
+        $statement->execute([$active, $name, $categoryId]);
 
         $response->getBody()->write(json_encode(
             ["success" => "Is updated"]

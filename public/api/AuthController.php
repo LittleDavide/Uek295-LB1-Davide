@@ -1,10 +1,23 @@
-<?php 
-use OpenApi\Attributes as OAT; 
+<?php
+
+use OpenApi\Attributes as OAT;
 use ReallySimpleJWT\Token;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
+
+/**
+ * Handles user authentication.
+ */
 class AuthController {
-        #[OAT\Post(
+    /**
+     * Authenticates the user and sets the token cookie.
+     *
+     * @param Request $request The incoming HTTP request.
+     * @param Response $response The HTTP response to populate.
+     * @param array $args The parameters extracted from the route.
+     * @returns Response The HTTP response with its status and body.
+     */
+    #[OAT\Post(
         path: '/api/v1/authenticate',
         summary: 'Authentifiziert einen Benutzer anhand von Benutzername und Passwort.',
         tags: ['auth'],
@@ -37,13 +50,13 @@ class AuthController {
             )
         ]
     )]
-    public static function authenticate(Request $request, Response $response, $args) {
+    public static function authenticate(Request $request, Response $response) {
         $requestBody = $request->getParsedBody();
         global $config;
         if ($requestBody["username"] != $config['username'] || $requestBody["password"] != $config["password"]) {
             return $response->withStatus(401);
         }
-        // Check if credentials are not valid.
+        // Create a token that expires after one hour.
         $token = Token::create($config['username'], $config["password"], time() + 3600, "localhost");
         setcookie("token", $token, time() + 3600);
 

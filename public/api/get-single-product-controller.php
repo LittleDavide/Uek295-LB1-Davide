@@ -1,10 +1,22 @@
 <?php
+
 use OpenApi\Attributes as OAT;
 use ReallySimpleJWT\Token;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
-class GetSingleProductController
-{
+
+/**
+ * Handles retrieval of individual products.
+ */
+class GetSingleProductController {
+    /**
+     * Returns the product selected by its SKU.
+     *
+     * @param Request $request The incoming HTTP request.
+     * @param Response $response The HTTP response to populate.
+     * @param array $args The parameters extracted from the route.
+     * @returns Response The HTTP response with its status and body.
+     */
     #[OAT\Get(
         path: '/api/v1/product/{sku}',
         summary: 'Gibt das gesuchte Produkt anhand seiner SKU zurück.',
@@ -36,8 +48,7 @@ class GetSingleProductController
             )
         ]
     )]
-    public static function getSingleProduct(Request $request, Response $response, $args)
-    {
+    public static function getSingleProduct(Request $request, Response $response, $args) {
         global $config;
         global $database;
 
@@ -64,18 +75,18 @@ class GetSingleProductController
                 ->withHeader("Content-Type", "application/json");
         }
 
-        $result_data = $result->fetch_assoc();
+        $resultData = $result->fetch_assoc();
 
         $response->getBody()->write(json_encode([
-            "product_id" => $result_data['product_id'],
-            "sku" => $result_data['sku'],
-            "active" => $result_data['active'],
-            "id_category" => $result_data['id_category'] ?? "",
-            "name" => $result_data['name'],
-            "image" => $result_data['image'],
-            "description" => $result_data['description'],
-            "price" => $result_data['price'],
-            "stock" => $result_data['stock']
+                "product_id" => $resultData['product_id'],
+                "sku" => $resultData['sku'],
+                "active" => $resultData['active'],
+                "id_category" => $resultData['id_category'] ?? "",
+                "name" => $resultData['name'],
+                "image" => $resultData['image'],
+                "description" => $resultData['description'],
+                "price" => $resultData['price'],
+                "stock" => $resultData['stock']
         ]));
 
         return $response
