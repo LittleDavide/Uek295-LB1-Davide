@@ -14,7 +14,7 @@ class GetAllCategoriesController {
      *
      * @param Request $request The incoming HTTP request.
      * @param Response $response The HTTP response to populate.
-     * @returns Response The HTTP response with its status and body.
+     * @return Response The HTTP response with its status and body.
      */
     #[OAT\Get(
         path: '/api/v1/categories',

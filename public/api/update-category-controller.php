@@ -15,7 +15,7 @@ class UpdateCategoryController {
      * @param Request $request The incoming HTTP request.
      * @param Response $response The HTTP response to populate.
      * @param array $args The parameters extracted from the route.
-     * @returns Response The HTTP response with its status and body.
+     * @return Response The HTTP response with its status and body.
      */
     #[OAT\PATCH(
         path: '/api/v1/category/{id}',
