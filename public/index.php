@@ -11,6 +11,7 @@ require_once __DIR__ . "/api/api-main.php";
 
 require_once __DIR__ . "/api/AuthController.php";
 require_once __DIR__ . "/api/CreateCategoryController.php";
+require_once __DIR__ . "/api/update-category-controller.php";
 
 $database = new mysqli("localhost", "root", "", "uek295_lb01");
 
@@ -19,9 +20,16 @@ $app->post("/authenticate", [
     "authenticate"
 ]);
 
+$app->patch("/category/{id}", [
+    UpdateCategoryController::class,
+    "updateCategory"
+]);
+
 $app->post("/category", [
     CreateCategoryController::class,
     "createCategory"
 ]);
+
+
 
 $app->run();
