@@ -98,6 +98,7 @@ class UpdateCategoryController {
 
         $statement->execute([$categoryId]);
 
+        // An unchanged update can affect zero rows even when the category exists.
         if (mysqli_num_rows($statement->get_result()) == 0) {
             $response->getBody()->write(json_encode(
                 ["error" => "category do not exist :("]

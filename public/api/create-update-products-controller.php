@@ -152,6 +152,7 @@ class CreateUpdateProductsController {
                 ->withHeader("Content-Type", "application/json");
         }
 
+        // Products may be saved without a category.
         if (!is_int($categoryId) && $categoryId !== null) {
             $response->getBody()->write(json_encode(
                 ["error" => "Muss eine nummer sein"]
@@ -161,6 +162,7 @@ class CreateUpdateProductsController {
                 ->withHeader("Content-Type", "application/json");
         }
 
+        // Reject missing categories before the database foreign key check.
         if ($categoryId !== null) {
             $statement = $database->prepare("SELECT * FROM category WHERE category_id = ?");
             $statement->execute([$categoryId]);
@@ -193,6 +195,7 @@ class CreateUpdateProductsController {
                 ->withHeader("Content-Type", "application/json");
         }
 
+        // JSON decodes 10.0 as a float, but 10 as an integer.
         if (!is_double($price)) {
             $response->getBody()->write(json_encode(
                 ["error" => "Kein gültiges Format bitte in Decimal eingeben"]
@@ -215,6 +218,7 @@ class CreateUpdateProductsController {
 
         $statement->execute([$sku]);
 
+        // The SKU determines whether this PUT creates or updates a product.
         if (mysqli_num_rows($statement->get_result()) == 0) {
             $statement = $database->prepare("INSERT INTO product (sku, active, id_category, name, image, description, price, stock) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 
